@@ -1,23 +1,7 @@
-// app/api/university/route.js
+import fs from 'fs';
+import path from 'path';
 
-let cachedData = [];
-let lastFetch = 0;
-const CACHE_INTERVAL = 1000 * 60 * 5; // 5분 캐시
-
-async function getSheetData() {
-  const now = Date.now();
-  if (!cachedData.length || now - lastFetch > CACHE_INTERVAL) {
-    const sheetUrl = process.env.GOOGLE_SHEET_URL;
-    if (!sheetUrl) throw new Error('GOOGLE_SHEET_URL is not 설정됨');
-
-    const res = await fetch(sheetUrl);
-    if (!res.ok) throw new Error('시트 데이터 가져오기 실패');
-    cachedData = await res.json();
-    lastFetch = now;
-    console.log(`시트 데이터를 갱신했습니다. 총 ${cachedData.length}개 항목`);
-  }
-  return cachedData;
-}
+const FILE_PATH = path.resolve('./data/university.json');
 
 function normalize(str) {
   return (str || '').normalize('NFC').replace(/\s/g,'').replace(/[\r\n]/g,'').toLowerCase();
@@ -25,11 +9,9 @@ function normalize(str) {
 
 export async function POST(req) {
   try {
-    // 요청 JSON 파싱
     const body = await req.json();
-
-    // 카카오 오픈빌더 기준 사용자 발화 추출
     const userUtterance = body.action?.params?.utterance || '';
+
     if (!userUtterance) {
       return new Response(JSON.stringify({
         version: "2.0",
@@ -37,19 +19,16 @@ export async function POST(req) {
       }), { headers: { 'Content-Type': 'application/json' } });
     }
 
+    // JSON 파일 읽기
+    const data = JSON.parse(fs.readFileSync(FILE_PATH, 'utf-8'));
     const inputNorm = normalize(userUtterance);
 
-    // Google Sheet 데이터 가져오기 (캐싱 포함)
-    const data = await getSheetData();
-
-    // 학교 데이터 필터링
     const matchedSchools = data.filter(row => 
       (row['학교구분'] === '대학' || row['학교구분'] === '전문대학') &&
       row['학교명'] &&
       normalize(row['학교명']).includes(inputNorm)
     );
 
-    // 응답 메시지 생성
     let message = '';
     if (matchedSchools.length > 0) {
       message = matchedSchools.map(school => 
@@ -62,13 +41,7 @@ export async function POST(req) {
       message = `죄송합니다. "${userUtterance}" 관련 학교 정보를 찾을 수 없습니다. (예: "서울대학교 알려줘")`;
     }
 
-    // 카카오 i 오픈빌더 응답 형식
-    const kakaoResponse = {
-      version: "2.0",
-      template: { outputs: [{ simpleText: { text: message } }] }
-    };
-
-    return new Response(JSON.stringify(kakaoResponse), {
+    return new Response(JSON.stringify({ version: "2.0", template: { outputs: [{ simpleText: { text: message } }] } }), {
       headers: { 'Content-Type': 'application/json' }
     });
 
@@ -81,7 +54,7 @@ export async function POST(req) {
   }
 }
 
-// GET 요청은 단순 확인용
+// GET 확인용
 export async function GET() {
   return new Response('OK');
 }
