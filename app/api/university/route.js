@@ -1,27 +1,23 @@
 // app/api/university/route.js
-
 import { extractUniversityAndIntent } from "@/utils/gemini.js";
+import fs from "fs";
+import path from "path";
 
-const FILE_URL = '/data/university.json'; // public 경로
-
-function normalize(str) {
-  return (str || '').normalize('NFC').replace(/\s/g,'').replace(/[\r\n]/g,'').toLowerCase();
-}
+const FILE_PATH = path.resolve("./data/university.json");
+const universities = JSON.parse(fs.readFileSync(FILE_PATH, "utf-8"));
 
 export async function POST(req) {
   try {
     const body = await req.json();
-    const utterance = body.action?.params?.utterance || '';
+    const utterance = body.action?.params?.utterance || "";
 
-    if (!utterance) {
-      return new Response(JSON.stringify({
-        version: "2.0",
-        template: { outputs: [{ simpleText: { text: "발화를 찾을 수 없습니다." } }] }
-      }), { headers: { "Content-Type": "application/json" } });
-    }
-
-    // 1. Gemini로 학교명 + 요청정보 추출
+    // Gemini API로 학교명 + 요청정보 추출
     const { 학교명, 요청정보 } = await extractUniversityAndIntent(utterance);
+
+    // 🔹 로그 출력
+    console.log("사용자 발화:", utterance);
+    console.log("추출된 학교명:", 학교명);
+    console.log("추출된 요청정보:", 요청정보);
 
     if (!학교명) {
       return new Response(JSON.stringify({
@@ -30,13 +26,7 @@ export async function POST(req) {
       }), { headers: { "Content-Type": "application/json" } });
     }
 
-    // 2. public 폴더에서 JSON fetch
-    const res = await fetch(new URL(FILE_URL, process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'));
-    if (!res.ok) throw new Error('university.json fetch 실패');
-    const universities = await res.json();
-
-    // 3. 학교 검색
-    const school = universities.find(u => u['학교명'] === 학교명);
+    const school = universities.find(u => u["학교명"] === 학교명);
 
     let message;
     if (school) {
@@ -69,9 +59,4 @@ export async function POST(req) {
       template: { outputs: [{ simpleText: { text: "서버 오류가 발생했습니다." } }] }
     }), { headers: { "Content-Type": "application/json" }, status: 500 });
   }
-}
-
-// GET 확인용
-export async function GET() {
-  return new Response('OK');
 }
