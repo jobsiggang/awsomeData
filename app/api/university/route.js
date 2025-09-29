@@ -3,7 +3,8 @@ import { extractUniversityAndIntent } from "@/utils/gemini.js";
 import fs from "fs";
 import path from "path";
 
-const FILE_PATH = path.resolve("./data/university.json");
+const FILE_PATH = path.join(process.cwd(), "public", "data", "university.json"); 
+
 const universities = JSON.parse(fs.readFileSync(FILE_PATH, "utf-8"));
 
 export async function POST(req) {
