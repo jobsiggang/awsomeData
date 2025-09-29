@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@vercel/speed-insights": "^1.2.0",
     "next": "15.5.4",
     "react": "19.1.0",
