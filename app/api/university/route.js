@@ -23,7 +23,7 @@ export async function POST(req) {
     if (!학교명) {
       return new Response(JSON.stringify({
         version: "2.0",
-        template: { outputs: [{ simpleText: { text: "학교명을 찾을 수 없습니다." } }] }
+        template: { outputs: [{ simpleText: { text: `${학교명}을 찾을 수 없습니다." `} }] }
       }), { headers: { "Content-Type": "application/json" } });
     }
 
