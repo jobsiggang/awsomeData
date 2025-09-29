@@ -57,3 +57,8 @@ export async function POST(req) {
     }), { headers: { "Content-Type": "application/json" }, status: 500 });
   }
 }
+
+// ✅ 카카오 오픈빌더 서버 검증용 GET 추가
+export async function GET() {
+  return new Response("OK", { status: 200 });
+}
