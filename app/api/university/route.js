@@ -41,6 +41,7 @@ export async function POST(req) {
         case "홈페이지":
           message = `${학교명} 홈페이지: ${school["학교홈페이지"] || "정보 없음"}`;
           break;
+          
         default:
           message = `${학교명} (${school["본분교"]})\n주소: ${school["도로명주소"]}\n전화: ${school["학교대표번호"]}`;
       }
