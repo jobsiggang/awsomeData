@@ -42,9 +42,10 @@ export default function ChatPage() {
 
   return (
     <div className="chat-container">
-      <h1 className="title">🕹️ Retro Data GPT</h1>
+      <h1 className="title">🌸 실시간 데이터 GPT 🌸</h1>
       <div className="chat-box">
-        안녕~ 아직은 학교 정보만 알 수 있어.<br/> 공공데이터 복구되면 다른 데이터도 추가할게!<br/>
+        안녕~ 아직은 학교 정보만 알려줄 수 있어요.<br/>
+        공공데이터가 복구되면 다른 정보도 곧 보여줄게요!<br/>
         {messages.map((msg, i) => (
           <div
             key={i}
@@ -53,7 +54,7 @@ export default function ChatPage() {
             {msg.text}
           </div>
         ))}
-        {loading && <div className="message bot">💬 ...부스럭부스럭...</div>}
+        {loading && <div className="message bot">💬 ...생각 중...</div>}
         <div ref={chatEndRef}></div>
       </div>
       <div className="input-container">
@@ -62,59 +63,60 @@ export default function ChatPage() {
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="타자를 쳐보세요..."
+          placeholder="메시지를 입력해보세요..."
         />
-        <button onClick={sendMessage}>▶️ SEND</button>
+        <button onClick={sendMessage}>💖 전송</button>
       </div>
 
       <style jsx>{`
         .chat-container {
           max-width: 600px;
           margin: 20px auto;
-          padding: 20px;
-          font-family: 'Press Start 2P', monospace;
-          background: #0a0a0a;
-          color: #00ffcc;
-          border: 4px solid #00ffcc;
-          border-radius: 10px;
+          padding: 25px;
+          font-family: 'Comic Neue', cursive;
+          background: #ffe6f0;
+          border: 4px solid #ffb6c1;
+          border-radius: 25px;
+          box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
         .title {
           text-align: center;
           margin-bottom: 15px;
-          font-weight: bold;
-          color: #ff00ff;
-          text-shadow: 2px 2px #000;
+          font-size: 24px;
+          color: #ff69b4;
+          text-shadow: 1px 1px #fff;
         }
         .chat-box {
-          border: 2px solid #00ffcc;
+          border: 2px solid #ffb6c1;
           padding: 15px;
           min-height: 400px;
           max-height: 70vh;
           overflow-y: auto;
-          background: #111;
-          box-shadow: inset 0 0 10px #00ffcc;
+          background: #fff0f5;
+          border-radius: 15px;
+          box-shadow: inset 0 4px 8px rgba(0,0,0,0.05);
         }
         .message {
-          padding: 8px 12px;
-          margin: 6px 0;
-          border-radius: 4px;
+          padding: 10px 15px;
+          margin: 8px 0;
+          border-radius: 15px;
           max-width: 80%;
           word-break: break-word;
           line-height: 1.4;
-          font-size: 12px;
+          font-size: 14px;
         }
         .user {
-          background: #ff00ff;
-          color: #000;
+          background: #ffccf2;
+          color: #c71585;
           margin-left: auto;
           text-align: right;
-          border: 2px solid #ff00ff;
+          border: 1px solid #ff99cc;
         }
         .bot {
-          background: #00ffcc;
-          color: #000;
+          background: #ffe6f0;
+          color: #ff1493;
           margin-right: auto;
-          border: 2px solid #00ffcc;
+          border: 1px solid #ff99cc;
         }
         .input-container {
           display: flex;
@@ -123,34 +125,36 @@ export default function ChatPage() {
         }
         input {
           flex: 1;
-          padding: 10px;
-          border: 2px solid #00ffcc;
-          background: #111;
-          color: #00ffcc;
+          padding: 10px 15px;
+          border: 2px solid #ffb6c1;
+          background: #fff0f5;
+          color: #c71585;
           outline: none;
-          font-family: 'Press Start 2P', monospace;
-          font-size: 12px;
+          font-family: 'Comic Neue', cursive;
+          font-size: 14px;
+          border-radius: 15px;
         }
         input::placeholder {
-          color: #00ffcc;
+          color: #ff69b4;
           opacity: 0.7;
         }
         button {
           padding: 10px 20px;
-          border: 2px solid #ff00ff;
-          background: #111;
-          color: #ff00ff;
-          font-family: 'Press Start 2P', monospace;
+          border: 2px solid #ff69b4;
+          background: #fff0f5;
+          color: #ff69b4;
+          font-family: 'Comic Neue', cursive;
           cursor: pointer;
+          border-radius: 15px;
           transition: 0.2s;
         }
         button:hover {
-          background: #ff00ff;
-          color: #111;
+          background: #ff69b4;
+          color: #fff0f5;
         }
       `}</style>
       <link
-        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap"
         rel="stylesheet"
       />
     </div>
