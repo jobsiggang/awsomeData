@@ -53,7 +53,7 @@ export default function ChatPage() {
             {msg.text}
           </div>
         ))}
-        {loading && <div className="message bot">💬 ...Thinking</div>}
+        {loading && <div className="message bot">💬 ...부스럭부스럭...</div>}
         <div ref={chatEndRef}></div>
       </div>
       <div className="input-container">
