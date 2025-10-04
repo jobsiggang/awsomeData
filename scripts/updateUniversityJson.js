@@ -4,7 +4,7 @@ import path from 'path';
 
 // Google Apps Script JSON URL
 const SHEET_URL = process.env.GOOGLE_SHEET_URL;
-
+const sheetNames =process.env.SHEET_NAMES;
 // university.json 저장 경로
 const FILE_PATH = path.resolve('./data/university.json');
 
