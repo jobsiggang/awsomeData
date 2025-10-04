@@ -42,7 +42,7 @@ export default function ChatPage() {
 
   return (
     <div className="chat-container">
-      <h1 className="title">🌴 공공데이터 챗봇 🌺</h1>
+      <h1 className="title">🌴 Real Time GPT 🌺</h1>
       <div className="chat-box">
         안녕하세요~ 🏝️ 학교 정보만 알려드릴 수 있어요.<br/>
         공공데이터가 복구되면 다른 정보도 곧 보여드릴게요! 🌊<br/>

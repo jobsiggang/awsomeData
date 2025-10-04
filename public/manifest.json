@@ -1,16 +1,16 @@
 {
   "short_name": "TropicalChat",
-  "name": "Tropical Chat GPT",
+  "name": "realTime Chat GPT",
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "/icons/icon.jpg",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/icons/icon.jpg",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/jpg"
     }
   ],
   "start_url": "/",
