@@ -8,7 +8,6 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef();
 
-  // 메시지 자동 스크롤
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
@@ -43,9 +42,9 @@ export default function ChatPage() {
 
   return (
     <div className="chat-container">
-      <h1 className="title">🧠 실시간 데이터 안내 GPT </h1>
+      <h1 className="title">🕹️ Retro Data GPT</h1>
       <div className="chat-box">
-        안녕~ 아직은 학교 정보만 알 수 있어.<br/> 공공데이터 포탈이 복구되면 다른 데이터도 곧 추가할게!<br/>
+        안녕~ 아직은 학교 정보만 알 수 있어.<br/> 공공데이터 복구되면 다른 데이터도 추가할게!<br/>
         {messages.map((msg, i) => (
           <div
             key={i}
@@ -63,77 +62,97 @@ export default function ChatPage() {
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="메시지를 입력하세요..."
+          placeholder="타자를 쳐보세요..."
         />
-        <button onClick={sendMessage}>전송</button>
+        <button onClick={sendMessage}>▶️ SEND</button>
       </div>
 
       <style jsx>{`
         .chat-container {
           max-width: 600px;
-          margin: 0 auto;
+          margin: 20px auto;
           padding: 20px;
-          font-family: 'Inter', sans-serif;
+          font-family: 'Press Start 2P', monospace;
+          background: #0a0a0a;
+          color: #00ffcc;
+          border: 4px solid #00ffcc;
+          border-radius: 10px;
         }
         .title {
           text-align: center;
           margin-bottom: 15px;
-          font-weight: 600;
+          font-weight: bold;
+          color: #ff00ff;
+          text-shadow: 2px 2px #000;
         }
         .chat-box {
-          border: 1px solid #ccc;
-          border-radius: 10px;
+          border: 2px solid #00ffcc;
           padding: 15px;
           min-height: 400px;
           max-height: 70vh;
           overflow-y: auto;
-          background: #f7f7f8;
+          background: #111;
+          box-shadow: inset 0 0 10px #00ffcc;
         }
         .message {
-          padding: 10px 15px;
-          margin: 8px 0;
-          border-radius: 20px;
+          padding: 8px 12px;
+          margin: 6px 0;
+          border-radius: 4px;
           max-width: 80%;
           word-break: break-word;
           line-height: 1.4;
+          font-size: 12px;
         }
         .user {
-          background: #10a37f;
-          color: #fff;
+          background: #ff00ff;
+          color: #000;
           margin-left: auto;
           text-align: right;
+          border: 2px solid #ff00ff;
         }
         .bot {
-          background: #e5e5ea;
+          background: #00ffcc;
           color: #000;
           margin-right: auto;
+          border: 2px solid #00ffcc;
         }
         .input-container {
           display: flex;
           margin-top: 10px;
+          gap: 10px;
         }
         input {
           flex: 1;
-          padding: 10px 15px;
-          border-radius: 20px;
-          border: 1px solid #ccc;
+          padding: 10px;
+          border: 2px solid #00ffcc;
+          background: #111;
+          color: #00ffcc;
           outline: none;
-          font-size: 14px;
+          font-family: 'Press Start 2P', monospace;
+          font-size: 12px;
+        }
+        input::placeholder {
+          color: #00ffcc;
+          opacity: 0.7;
         }
         button {
-          margin-left: 10px;
           padding: 10px 20px;
-          border-radius: 20px;
-          border: none;
-          background-color: #10a37f;
-          color: white;
+          border: 2px solid #ff00ff;
+          background: #111;
+          color: #ff00ff;
+          font-family: 'Press Start 2P', monospace;
           cursor: pointer;
-          font-weight: 500;
+          transition: 0.2s;
         }
         button:hover {
-          background-color: #0e8e6b;
+          background: #ff00ff;
+          color: #111;
         }
       `}</style>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+        rel="stylesheet"
+      />
     </div>
   );
 }
