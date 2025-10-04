@@ -1,20 +1,18 @@
 // app/api/school/route.js
-import { extractSheetSchoolField } from "@/utils/gemini.js";
-import { googleSheetsFetch, googleSheetsFetchColumns } from "@/utils/googleSheets.js";
+import { extractSheetSchoolField, initSheetColumnsCache } from "@/utils/gemini.js";
+import { googleSheetsFetch } from "@/utils/googleSheets.js";
 
-let cachedSheetStructure = null; // 시트명 + 컬럼 캐시
+// 서버 메모리 캐시
+let sheetDataCache = {};
 
-async function fetchSheetStructure() {
-  if (!cachedSheetStructure) {
-    const sheetNames = ["대학교", "중고등학교"]; // 필요 시 구글 시트에서 동적 조회 가능
-    cachedSheetStructure = {};
-    for (const name of sheetNames) {
-      const columns = await googleSheetsFetchColumns(name); // 시트 컬럼만 가져오기
-      cachedSheetStructure[name] = columns;
-    }
-    console.log("Cached Sheet Structure:", cachedSheetStructure);
-  }
-  return cachedSheetStructure;
+/**
+ * 시트 데이터 캐시 초기화
+ */
+async function initSheetDataCache(sheetName) {
+  if (sheetDataCache[sheetName]) return; // 이미 캐시 있음
+  const data = await googleSheetsFetch(sheetName);
+  sheetDataCache[sheetName] = data;
+  console.log(`✅ ${sheetName} 데이터 캐시 완료 (${data.length}건)`);
 }
 
 export async function POST(req) {
@@ -22,26 +20,28 @@ export async function POST(req) {
     const body = await req.json();
     const utterance = body.action?.params?.utterance || "";
 
-    // 캐시된 시트 구조 가져오기
-    const sheetStructure = await fetchSheetStructure();
+    // 시트 컬럼 캐시 초기화
+    await initSheetColumnsCache();
 
-    // Gemini API로 시트명, 학교명, 요청항목 추출
-    const { 시트명, 학교명, 요청항목 } = await extractSheetSchoolField(utterance, sheetStructure);
-
+    // 발화에서 시트명, 학교명, 요청항목 추출
+    const { 시트명, 학교명, 요청항목 } = await extractSheetSchoolField(utterance);
     console.log("사용자 발화:", utterance);
     console.log("추출:", { 시트명, 학교명, 요청항목 });
 
-    if (!시트명 || !학교명 || !요청항목 || 요청항목.length === 0) {
+    if (!시트명 || !학교명 || 요청항목.length === 0) {
       return new Response(JSON.stringify({
         version: "2.0",
-        template: { outputs: [{ simpleText: { text: "학교명 또는 요청 항목을 인식하지 못했습니다." } }] }
+        template: {
+          outputs: [{ simpleText: { text: "학교명 또는 요청 항목을 인식하지 못했습니다." } }]
+        }
       }), { headers: { "Content-Type": "application/json" } });
     }
 
-    // 요청 시트 데이터 가져오기
-    const sheetData = await googleSheetsFetch(시트명);
-    if (!Array.isArray(sheetData)) throw new Error("시트 데이터 형식 오류");
+    // 시트 데이터 캐시 초기화
+    await initSheetDataCache(시트명);
+    const sheetData = sheetDataCache[시트명];
 
+    // 학교 찾기
     const school = sheetData.find(s => s["학교명"] === 학교명);
     if (!school) {
       return new Response(JSON.stringify({
@@ -50,15 +50,16 @@ export async function POST(req) {
       }), { headers: { "Content-Type": "application/json" } });
     }
 
-    // 요청항목에 맞춰 응답 생성
-    const messageLines = 요청항목.map(key => {
-      if (key === "홈페이지" && school[key]) {
-        return `${key}: <a href="${school[key]}" target="_blank">${school[key]}</a>`;
+    // 요청항목 결과 생성
+    const messages = 요청항목.map(field => {
+      const value = school[field] || "정보 없음";
+      if (field === "홈페이지" && value !== "정보 없음") {
+        return `${field}: <a href="${value}" target="_blank">${value}</a>`;
       }
-      return `${key}: ${school[key] || "정보 없음"}`;
+      return `${field}: ${value}`;
     });
 
-    const message = messageLines.join("\n");
+    const message = `${학교명} 정보\n${messages.join("\n")}`;
 
     return new Response(JSON.stringify({
       version: "2.0",
