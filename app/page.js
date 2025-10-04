@@ -42,7 +42,7 @@ export default function ChatPage() {
 
   return (
     <div className="chat-container">
-      <h1 className="title">🌴 Tropical Chat 🌺</h1>
+      <h1 className="title">🌴 공공데이터 챗봇 🌺</h1>
       <div className="chat-box">
         안녕하세요~ 🏝️ 학교 정보만 알려드릴 수 있어요.<br/>
         공공데이터가 복구되면 다른 정보도 곧 보여드릴게요! 🌊<br/>
@@ -54,7 +54,7 @@ export default function ChatPage() {
             {msg.text}
           </div>
         ))}
-        {loading && <div className="message bot">💬 ...잠깐만요, 열대 바람이 불어오는 중...</div>}
+        {loading && <div className="message bot">💬 ...잠깐만요, 부스럭 부스럭...</div>}
         <div ref={chatEndRef}></div>
       </div>
       <div className="input-container">
