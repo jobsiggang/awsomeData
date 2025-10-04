@@ -1,6 +1,6 @@
 // app/api/chat/route.js
 import { extractSheetSchoolField, generateHumanLikeReply } from "@/utils/gemini.js";
-import { getSheetDataCache } from "@/utils/googleSheets.js";
+import { getSheetDataCache, initSheetDataCache } from "@/utils/googleSheets.js";
 
 // 캐시 준비 대기
 async function waitForCache(maxWait = 5000) {
@@ -20,6 +20,12 @@ export async function POST(req) {
 
     // 캐시 확인
     const sheetDataCache = await waitForCache();
+      // 캐시가 없으면 초기화
+    if (!sheetDataCache) {
+        console.log("⚙️ 캐시 없음 → 새로 초기화 중...");
+        await initSheetDataCache();
+        sheetDataCache = getSheetDataCache();
+    }
     if (!sheetDataCache) {
       return new Response("시트 데이터가 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.", { status: 503 });
     }
