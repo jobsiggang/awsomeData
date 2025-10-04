@@ -45,6 +45,7 @@ export default function ChatPage() {
     <div className="chat-container">
       <h1 className="title">🧠 실시간 데이터 안내 GPT </h1>
       <div className="chat-box">
+        안녕~ 아직은 학교 정보만 알 수 있어.<br/> 공공데이터 포탈이 복구되면 다른 데이터도 곧 추가할게!<br/>
         {messages.map((msg, i) => (
           <div
             key={i}
