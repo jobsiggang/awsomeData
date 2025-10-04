@@ -1,0 +1,21 @@
+{
+  "short_name": "TropicalChat",
+  "name": "Tropical Chat GPT",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#a2f6f9",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#20b2aa"
+}
