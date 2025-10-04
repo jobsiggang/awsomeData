@@ -42,10 +42,10 @@ export default function ChatPage() {
 
   return (
     <div className="chat-container">
-      <h1 className="title">🌸 실시간 데이터 GPT 🌸</h1>
+      <h1 className="title">🌴 Tropical Chat 🌺</h1>
       <div className="chat-box">
-        안녕~ 아직은 학교 정보만 알려줄 수 있어요.<br/>
-        공공데이터가 복구되면 다른 정보도 곧 보여줄게요!<br/>
+        안녕하세요~ 🏝️ 학교 정보만 알려드릴 수 있어요.<br/>
+        공공데이터가 복구되면 다른 정보도 곧 보여드릴게요! 🌊<br/>
         {messages.map((msg, i) => (
           <div
             key={i}
@@ -54,7 +54,7 @@ export default function ChatPage() {
             {msg.text}
           </div>
         ))}
-        {loading && <div className="message bot">💬 ...생각 중...</div>}
+        {loading && <div className="message bot">💬 ...잠깐만요, 열대 바람이 불어오는 중...</div>}
         <div ref={chatEndRef}></div>
       </div>
       <div className="input-container">
@@ -63,9 +63,9 @@ export default function ChatPage() {
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="메시지를 입력해보세요..."
+          placeholder="메시지를 입력하세요..."
         />
-        <button onClick={sendMessage}>💖 전송</button>
+        <button onClick={sendMessage}>🏖️ 보내기</button>
       </div>
 
       <style jsx>{`
@@ -73,50 +73,49 @@ export default function ChatPage() {
           max-width: 600px;
           margin: 20px auto;
           padding: 25px;
-          font-family: 'Comic Neue', cursive;
-          background: #ffe6f0;
-          border: 4px solid #ffb6c1;
+          font-family: 'Poppins', sans-serif;
+          background: linear-gradient(145deg, #a2f6f9, #ffe3b3);
           border-radius: 25px;
-          box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+          box-shadow: 0 10px 20px rgba(0,0,0,0.15);
         }
         .title {
           text-align: center;
           margin-bottom: 15px;
-          font-size: 24px;
-          color: #ff69b4;
+          font-size: 26px;
+          color: #ff6f61;
           text-shadow: 1px 1px #fff;
         }
         .chat-box {
-          border: 2px solid #ffb6c1;
+          border: 2px solid #ffb347;
           padding: 15px;
           min-height: 400px;
           max-height: 70vh;
           overflow-y: auto;
-          background: #fff0f5;
-          border-radius: 15px;
-          box-shadow: inset 0 4px 8px rgba(0,0,0,0.05);
+          background: linear-gradient(to bottom, #d4fc79, #96e6a1);
+          border-radius: 20px;
+          box-shadow: inset 0 6px 12px rgba(0,0,0,0.05);
         }
         .message {
           padding: 10px 15px;
           margin: 8px 0;
-          border-radius: 15px;
+          border-radius: 20px;
           max-width: 80%;
           word-break: break-word;
           line-height: 1.4;
           font-size: 14px;
         }
         .user {
-          background: #ffccf2;
-          color: #c71585;
+          background: #ffdab9;
+          color: #d2691e;
           margin-left: auto;
           text-align: right;
-          border: 1px solid #ff99cc;
+          border: 1px solid #ffa500;
         }
         .bot {
-          background: #ffe6f0;
-          color: #ff1493;
+          background: #b2f7ef;
+          color: #008080;
           margin-right: auto;
-          border: 1px solid #ff99cc;
+          border: 1px solid #20b2aa;
         }
         .input-container {
           display: flex;
@@ -126,35 +125,35 @@ export default function ChatPage() {
         input {
           flex: 1;
           padding: 10px 15px;
-          border: 2px solid #ffb6c1;
-          background: #fff0f5;
-          color: #c71585;
+          border: 2px solid #20b2aa;
+          background: #e0fff7;
+          color: #008080;
           outline: none;
-          font-family: 'Comic Neue', cursive;
+          font-family: 'Poppins', sans-serif;
           font-size: 14px;
-          border-radius: 15px;
+          border-radius: 20px;
         }
         input::placeholder {
-          color: #ff69b4;
+          color: #20b2aa;
           opacity: 0.7;
         }
         button {
           padding: 10px 20px;
-          border: 2px solid #ff69b4;
-          background: #fff0f5;
-          color: #ff69b4;
-          font-family: 'Comic Neue', cursive;
+          border: 2px solid #ff6f61;
+          background: #ffe3b3;
+          color: #ff6f61;
+          font-family: 'Poppins', sans-serif;
           cursor: pointer;
-          border-radius: 15px;
+          border-radius: 20px;
           transition: 0.2s;
         }
         button:hover {
-          background: #ff69b4;
-          color: #fff0f5;
+          background: #ff6f61;
+          color: #fff;
         }
       `}</style>
       <link
-        href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
         rel="stylesheet"
       />
     </div>
