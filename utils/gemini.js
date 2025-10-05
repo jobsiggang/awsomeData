@@ -22,7 +22,7 @@ export async function extractSheetSchoolField(utterance, sheetKeys) {
 - 핵심키값: 시트별 keyFieldMap 참조
 - 추가항목: 항목명없는 날씨가 있고 항목명에 위도 경도가 있으면 요청 항목에 주소, 위도, 경도도 반드시 포함, 추가항목에 날씨 추가
 -없으면 추가항목은 빈배열, 학교명을 정확히 말하지 않아도 유사한 이름으로 인식 가능 (예: 울산대 → 울산대학교, 언양고=>언양고등학교)
-출력 예시: {"시트명": "대학교", "학교명": "울산대학교", "요청항목": ["주소","전화"], "추가항목": ["날씨"]}
+출력 예시: {"시트명": "대학교", "학교명": "울산대학교", "요청항목": ["주소","전화"]}
 반드시 JSON만 출력
 발화: "${utterance}"
 `;
@@ -36,7 +36,7 @@ export async function extractSheetSchoolField(utterance, sheetKeys) {
     const jsonEnd = text.lastIndexOf("}") + 1;
     if (jsonStart === -1 || jsonEnd === 0) {
       console.warn("Gemini 응답에 JSON이 없음:", text);
-      return { 시트명: null, 핵심값: null, 요청항목: [], 추가항목: [] };
+      return { 시트명: null, 핵심값: null, 요청항목: []};
     }
 
     let parsed = {};
@@ -67,8 +67,8 @@ export async function extractSheetSchoolField(utterance, sheetKeys) {
  */
 export async function generateHumanLikeReply(userUtterance, filteredData) {
   const prompt = filteredData?.length
-    ? `사용자가 "${userUtterance}"라고 물었습니다. 자연스럽게 설명해 주세요, 세문장이하로 간단히 사실만 말해요\n${JSON.stringify(filteredData)}`
-    : `사용자가 "${userUtterance}"라고 물었습니다. 데이터가 없습니다. 비슷한 정보를 제안하거나 질문을 유도해주세요. 세문장이하로 간단히 사실만 말해요`;
+    ? `사용자가 "${userUtterance}"라고 물었습니다. ${filteredData}를 자연스럽게 설명해 주세요, 세문장이하로 간단히 사실만 말해요\n`
+    : `사용자가 "${userUtterance}"라고 물었습니다. 하지만 제가 가진 정보로는 답변을 드리기 어렵습니다. 죄송합니다.`;
 
   try {
     const result = await model.generateContent(prompt);

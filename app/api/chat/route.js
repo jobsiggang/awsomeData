@@ -2,29 +2,6 @@
 import { extractSheetSchoolField, generateHumanLikeReply } from "@/utils/gemini.js";
 import { getSheetDataCache, initSheetDataCache } from "@/utils/googleSheets.js";
 
-// OpenWeather API 호출 함수
-async function getWeather(lat, lon) {
-  const apiKey = process.env.OPENWEATHER_API_KEY;
- //const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=metric&lang=kr&appid=${apiKey}`;
-// const url = `https://api.openweathermap.org/data/3.0/onecall?lat=33.44&lon=-94.04&appid="d34be590ec72ddf16d8eb9438dbc445a"`;
-//   try {
-//     const res = await fetch(url);
-//     if (!res.ok) throw new Error(`OpenWeather API 오류: ${res.status}`);
-//     const data = await res.json();
-//     console.log("🌤️ OpenWeather 데이터:", data) ;
-//     return {
-//       현재: {
-//         온도: 45,//data.current?.temp,
-//         습도: 70,//data.current?.humidity,
-//         날씨: "더워"//data.current?.weather?.[0]?.description,
-//       },
-//     };
-//   } catch (err) {
-//     console.error("🌧️ OpenWeather API 호출 실패:", err);
-//     return null;
-//   }
-    return "🌤️ 현재 날씨: 온도 45도, 습도 70%, 맑음";}
-
 
 // 시트 캐시가 준비될 때까지 대기
 async function waitForCache(maxWait = 5000) {
@@ -96,19 +73,9 @@ export async function POST(req) {
         return obj;
       });
 
-    // 7️⃣ 날씨 요청 여부 확인 및 API 호출
-    let weather = null;
-    if (analysis.추가항목?.includes("날씨") && filtered.length > 0) {
-      const first = filtered[0];
-      const lat = first["위도"] || first["lat"];
-      const lon = first["경도"] || first["lon"];
-      if (lat && lon) {
-        weather = await getWeather(lat, lon);
-      }
-    }
 
     // 8️⃣ Gemini로 자연스러운 응답 생성
-    const reply = await generateHumanLikeReply(userUtterance, filtered, { weather });
+    const reply = await generateHumanLikeReply(userUtterance, filtered);
 
     return new Response(reply, { status: 200 });
 
