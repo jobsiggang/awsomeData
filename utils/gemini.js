@@ -6,6 +6,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 /**
  * 시트 발화 분석
  * sheetKeys: { 시트명: [컬럼1, 컬럼2, ...] } (캐시에서 컬럼명만 전달)
+ * 요청항목은 반드시 시트 컬럼명 중 하나로 선택되도록 지시
  */
 export async function extractSheetSchoolField(utterance, sheetKeys) {
   const sheetList = Object.keys(sheetKeys);
@@ -18,10 +19,12 @@ export async function extractSheetSchoolField(utterance, sheetKeys) {
   const prompt = `
 사용자가 발화한 문장에서 시트명, 핵심값, 요청항목을 JSON으로 추출해주세요.
 - 시트명: ${sheetList.join(", ")}
-- 요청항목: ${sheetList.map(s => `${s}: [${sheetKeys[s].join(", ")}]`).join("; ")}
+- 요청항목: ${sheetList.map(
+    s => `${s}: [${sheetKeys[s].join(", ")}]`
+  ).join("; ")}
 - 핵심키값: 시트별 keyFieldMap 참조
-- 추가항목: 항목명없는 날씨가 있고 항목명에 위도 경도가 있으면 요청 항목에 주소, 위도, 경도도 반드시 포함, 추가항목에 날씨 추가
--없으면 추가항목은 빈배열, 학교명을 정확히 말하지 않아도 유사한 이름으로 인식 가능 (예: 울산대 → 울산대학교, 언양고=>언양고등학교)
+- 요청항목은 반드시 실제 시트 컬럼명 중 하나로 선택하세요.
+- 학교명을 정확히 말하지 않아도 유사한 이름으로 인식 가능 (예: 울산대 → 울산대학교, 언양고 → 언양고등학교)
 출력 예시: {"시트명": "대학교", "학교명": "울산대학교", "요청항목": ["주소","전화"]}
 반드시 JSON만 출력
 발화: "${utterance}"
@@ -58,23 +61,5 @@ export async function extractSheetSchoolField(utterance, sheetKeys) {
   } catch (err) {
     console.error("Gemini 분석 실패:", err);
     return { 시트명: null, 핵심값: null, 요청항목: [], 추가항목: [] };
-  }
-}
-
-/**
- * Gemini를 활용해 검색 결과를 자연스러운 대화형 응답으로 변환
- * filteredData: [{컬럼1:값, 컬럼2:값}, ...]
- */
-export async function generateHumanLikeReply(userUtterance, filteredData) {
-  const prompt = filteredData?.length
-    ? `사용자가 "${userUtterance}"라고 물었습니다. ${filteredData}를 자연스럽게 설명해 주세요, 세문장이하로 간단히 사실만 말해요\n`
-    : `사용자가 "${userUtterance}"라고 물었습니다. 하지만 제가 가진 정보로는 답변을 드리기 어렵습니다. 죄송합니다.`;
-
-  try {
-    const result = await model.generateContent(prompt);
-    return result?.response?.text() || "죄송합니다. 답변 생성 실패, 다시 질문해 주세요.";
-  } catch (err) {
-    console.error("Gemini 자연어 응답 실패:", err);
-    return "죄송합니다. 답변 생성 실패, 다시 질문해 주세요.";
   }
 }

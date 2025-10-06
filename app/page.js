@@ -8,6 +8,16 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef();
 
+  // 페이지 로드 시 초기 안내 메시지
+  useEffect(() => {
+    setMessages([
+      {
+        sender: "bot",
+        text: "안녕하세요~ 🏫 학교 관련해서 물어보세요!"
+      }
+    ]);
+  }, []);
+
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
@@ -26,11 +36,13 @@ export default function ChatPage() {
         body: JSON.stringify({ utterance: userMsg }),
       });
 
-      const text = await res.text();
-      setMessages(prev => [...prev, { sender: "bot", text }]);
+      const data = await res.json();
+      console.log("✅ API 응답:", data);
+
+      setMessages(prev => [...prev, { sender: "bot", text: data.bot }]);
     } catch (err) {
       setMessages(prev => [...prev, { sender: "bot", text: "오류 발생" }]);
-      console.error(err);
+      console.error("❌ 전송 오류:", err);
     } finally {
       setLoading(false);
     }
@@ -41,23 +53,20 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="chat-container">
-      <h1 className="title">🌴 Real Time GPT 🌺</h1>
-      <div className="chat-box">
-        안녕하세요~ 🏝️ 학교 정보만 알려드릴 수 있어요.<br/>
-        공공데이터가 복구되면 다른 정보도 곧 보여드릴게요! 🌊<br/>
+    <div className="container">
+      <div className="chat-header">
+        <h2>SchoolBot 🌴</h2>
+      </div>
+      <div className="chat-feed">
         {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`message ${msg.sender === "user" ? "user" : "bot"}`}
-          >
+          <div key={i} className={`message ${msg.sender}`}>
             {msg.text}
           </div>
         ))}
-        {loading && <div className="message bot">💬 ...잠깐만요, 부스럭 부스럭...</div>}
+        {loading && <div className="message bot">💬 부스럭 부스럭...</div>}
         <div ref={chatEndRef}></div>
       </div>
-      <div className="input-container">
+      <div className="chat-input">
         <input
           type="text"
           value={input}
@@ -65,97 +74,81 @@ export default function ChatPage() {
           onKeyPress={handleKeyPress}
           placeholder="메시지를 입력하세요..."
         />
-        <button onClick={sendMessage}>🏖️ 보내기</button>
+        <button onClick={sendMessage}>전송</button>
       </div>
 
       <style jsx>{`
-        .chat-container {
-          max-width: 600px;
-          margin: 20px auto;
-          padding: 25px;
-          font-family: 'Poppins', sans-serif;
-          background: linear-gradient(145deg, #a2f6f9, #ffe3b3);
-          border-radius: 25px;
-          box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        .container {
+          max-width: 500px;
+          margin: 40px auto;
+          display: flex;
+          flex-direction: column;
+          height: 80vh;
+          border: 1px solid #ddd;
+          border-radius: 15px;
+          overflow: hidden;
+          background: #fff;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+          font-family: 'Helvetica Neue', sans-serif;
         }
-        .title {
-          text-align: center;
-          margin-bottom: 15px;
-          font-size: 26px;
-          color: #ff6f61;
-          text-shadow: 1px 1px #fff;
-        }
-        .chat-box {
-          border: 2px solid #ffb347;
+        .chat-header {
           padding: 15px;
-          min-height: 400px;
-          max-height: 70vh;
+          background: linear-gradient(90deg, #ff758c, #ff7eb3);
+          color: #fff;
+          font-weight: bold;
+          text-align: center;
+          font-size: 18px;
+        }
+        .chat-feed {
+          flex: 1;
+          padding: 10px;
           overflow-y: auto;
-          background: linear-gradient(to bottom, #d4fc79, #96e6a1);
-          border-radius: 20px;
-          box-shadow: inset 0 6px 12px rgba(0,0,0,0.05);
+          background: #f2f2f2;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
         }
         .message {
+          max-width: 70%;
           padding: 10px 15px;
-          margin: 8px 0;
           border-radius: 20px;
-          max-width: 80%;
           word-break: break-word;
-          line-height: 1.4;
           font-size: 14px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .user {
+          align-self: flex-end;
           background: #ffdab9;
           color: #d2691e;
-          margin-left: auto;
-          text-align: right;
-          border: 1px solid #ffa500;
         }
         .bot {
+          align-self: flex-start;
           background: #b2f7ef;
           color: #008080;
-          margin-right: auto;
-          border: 1px solid #20b2aa;
         }
-        .input-container {
+        .chat-input {
           display: flex;
-          margin-top: 10px;
-          gap: 10px;
+          border-top: 1px solid #ddd;
         }
         input {
           flex: 1;
           padding: 10px 15px;
-          border: 2px solid #20b2aa;
-          background: #e0fff7;
-          color: #008080;
+          border: none;
           outline: none;
-          font-family: 'Poppins', sans-serif;
           font-size: 14px;
-          border-radius: 20px;
-        }
-        input::placeholder {
-          color: #20b2aa;
-          opacity: 0.7;
         }
         button {
-          padding: 10px 20px;
-          border: 2px solid #ff6f61;
-          background: #ffe3b3;
-          color: #ff6f61;
-          font-family: 'Poppins', sans-serif;
+          padding: 0 20px;
+          background: #ff758c;
+          color: #fff;
+          border: none;
           cursor: pointer;
-          border-radius: 20px;
-          transition: 0.2s;
+          font-weight: bold;
         }
         button:hover {
-          background: #ff6f61;
-          color: #fff;
+          background: #ff7eb3;
         }
       `}</style>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-        rel="stylesheet"
-      />
     </div>
   );
 }
