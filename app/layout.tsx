@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { startAutoRefresh } from "@/utils/googleSheets.js";
-
-startAutoRefresh(10); // 10분마다 갱신
 
 
 const geistSans = Geist({
